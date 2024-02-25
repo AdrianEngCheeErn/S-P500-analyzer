@@ -1,2 +1,2 @@
 How to run:
-Go command prompt and go to location of file, than enter 'streamlit run main.py'
+Go to the command prompt and enter the of the file, than enter 'streamlit run main.py'
