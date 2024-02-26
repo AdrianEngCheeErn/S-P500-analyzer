@@ -19,7 +19,14 @@ df_selected_sector = df[ (df['GICS Sector'].isin(selected_sector)) ]
 st.header('Filtered Companies')
 st.dataframe(df_selected_sector)
 
-#Predict stock prices
-st.header('Stock Prediction')
+#Display stock price
+st.header('Stock Price')
 stock_symbols = df["Symbol"]
-input_symbol =  st.selectbox("Select symbol of stock", stock_symbols)
+input_symbol =  st.selectbox("Select symbol of stock", ["-"] + list(stock_symbols))
+input_period =  st.selectbox("Select period", ["1D", "5D", "1M", "6M", "YTD", "1Y", "5Y", "Max"])
+price_history = yf.Ticker(input_symbol)
+if input_symbol != "-":
+    price_history = price_history.history(period=input_period)
+    st.dataframe(price_history)
+
+#Stock price prediction TODO
