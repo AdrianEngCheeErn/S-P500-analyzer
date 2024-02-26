@@ -13,7 +13,7 @@ st.title('S&P 500 Analyzer')
 st.sidebar.header('Filter by GICS sector')
 sorted_sector_unique = sorted( df['GICS Sector'].unique() )
 selected_sector = st.sidebar.multiselect('Sector', sorted_sector_unique, sorted_sector_unique)
-df_selected_sector = df[ (df['GICS Sector'].isin(selected_sector)) ]
+df_selected_sector = df[ (df['GICS Sector'].isin(selected_sector)) ]    
 
 #Display companies based on selected GICS Sector
 st.header('Filtered Companies')
@@ -29,4 +29,8 @@ if input_symbol != "-":
     price_history = price_history.history(period=input_period)
     st.dataframe(price_history)
 
-#Stock price prediction TODO
+
+    #Stock price prediction TODO
+    price_history["Tomorrow"] = price_history["Close"].shift(-1)
+    price_history = price_history.loc["1990-01-01":].copy()
+    st.dataframe(price_history)
