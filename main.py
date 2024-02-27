@@ -49,9 +49,10 @@ if input_symbol != "-":
         ax.legend(loc='upper left')
         ax.tick_params(axis='x', rotation=45)
         plot.pyplot(fig)
-        st.write(f"Latest Price ({latest_time}): {latest_price}")
         time.sleep(60)
 
 
 #Stock price prediction TODO
-    train_data = price_history
+
+
+
