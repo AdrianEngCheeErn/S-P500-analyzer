@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from prophet import Prophet
 from prophet.plot import plot_plotly
 from plotly import graph_objs as go
-from datetime import date
+from datetime import date, timedelta
 import time
 
 
@@ -47,16 +47,6 @@ if input_symbol != "-":
 
         
     data = load_data(input_symbol)
-
-
-    def plot_raw_data():
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
-        fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="stock_close"))
-        fig.layout.update(title_text='Time Series data with Rangeslider', xaxis_rangeslider_visible=True)
-        st.plotly_chart(fig)
-        
-    plot_raw_data()
 
 
     st.subheader('Stock price prediction')
