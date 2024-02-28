@@ -26,7 +26,7 @@ st.header('Filtered Companies')
 st.dataframe(df_selected_sector)
 
 #Display stock price
-st.header('Stock Price')
+st.header('Stock Details')
 stock_symbols = df["Symbol"]
 input_symbol =  st.selectbox("Select symbol of stock", ["-"] + list(stock_symbols))
 
