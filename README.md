@@ -1,2 +1,3 @@
-How to run:
-Go to the command prompt and enter the path of the file, than enter 'streamlit run main.py'
+Link: https://snp500-analyzer-1.onrender.com  
+Hosted on Render's free cloud application hosting service.   
+Stock forecasting utilizing meta's prophet library. 
