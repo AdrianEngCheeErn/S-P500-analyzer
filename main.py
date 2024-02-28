@@ -29,9 +29,13 @@ st.dataframe(df_selected_sector)
 st.header('Stock Details')
 stock_symbols = df["Symbol"]
 input_symbol =  st.selectbox("Select symbol of stock", ["-"] + list(stock_symbols))
-
+input_period =  st.selectbox("Select period", ["1D", "5D", "1M", "6M", "YTD", "1Y", "5Y", "Max"])
+price_history = yf.Ticker(input_symbol)
 
 if input_symbol != "-":
+    price_history = price_history.history(period=input_period)
+    st.dataframe(price_history)
+    
     TODAY = date.today().strftime("%Y-%m-%d")
     START = "2015-01-01"
 
@@ -43,8 +47,7 @@ if input_symbol != "-":
 
         
     data = load_data(input_symbol)
-    st.subheader('Raw data')
-    st.write(data.tail())
+
 
     def plot_raw_data():
         fig = go.Figure()
