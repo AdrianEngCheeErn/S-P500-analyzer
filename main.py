@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from prophet import Prophet
 from prophet.plot import plot_plotly
 from plotly import graph_objs as go
+from datetime import date
 import time
 
 
@@ -28,38 +29,37 @@ st.dataframe(df_selected_sector)
 st.header('Stock Price')
 stock_symbols = df["Symbol"]
 input_symbol =  st.selectbox("Select symbol of stock", ["-"] + list(stock_symbols))
-input_period =  st.selectbox("Select period", ["1D", "5D", "1M", "6M", "YTD", "1Y", "5Y", "Max"])
+
+
 if input_symbol != "-":
-    price_history = yf.Ticker(input_symbol)
-    price_history = price_history.history(period=input_period)
-    st.dataframe(price_history)
-    fig, ax = plt.subplots()
-    plot = st.pyplot(fig)
+    TODAY = date.today().strftime("%Y-%m-%d")
+    START = "2015-01-01"
 
-    # Loop to fetch and update stock values
-    while True:
-        historical_prices = price_history
-        latest_price = historical_prices['Close'].iloc[-1]
-        latest_time = historical_prices.index[-1].strftime('%H:%M:%S')
-        ax.clear()
-        ax.plot(historical_prices.index, historical_prices['Close'], label='Stock Value')
-        ax.set_xlabel('Time')
-        ax.set_ylabel('Stock Value')
-        ax.set_title('Stock Value')
-        ax.legend(loc='upper left')
-        ax.tick_params(axis='x', rotation=45)
-        plot.pyplot(fig)
-        time.sleep(60)
-
-    n_years = st.slider('Years of prediction:', 1, 4)
-    period = n_years * 365
-
-    @st.cache
+    @st.cache_data
     def load_data(ticker):
         data = yf.download(ticker, START, TODAY)
         data.reset_index(inplace=True)
         return data
-    
+
+        
+    data = load_data(input_symbol)
+    st.subheader('Raw data')
+    st.write(data.tail())
+
+    def plot_raw_data():
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
+        fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="stock_close"))
+        fig.layout.update(title_text='Time Series data with Rangeslider', xaxis_rangeslider_visible=True)
+        st.plotly_chart(fig)
+        
+    plot_raw_data()
+
+
+    st.subheader('Stock price prediction')
+    # Predict forecast with Prophet.
+    n_years = st.slider('Years of prediction:', 1, 4)
+    period = n_years * 365
     df_train = data[['Date','Close']]
     df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
 
@@ -68,6 +68,7 @@ if input_symbol != "-":
     future = m.make_future_dataframe(periods=period)
     forecast = m.predict(future)
 
+    # Show and plot forecast
     st.subheader('Forecast data')
     st.write(forecast.tail())
         
@@ -78,6 +79,3 @@ if input_symbol != "-":
     st.write("Forecast components")
     fig2 = m.plot_components(forecast)
     st.write(fig2)
-
-
-
