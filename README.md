@@ -6,7 +6,7 @@ The website is hosted on Render's free cloud application hosting service. Link: 
 The stock forecasting functionality utilizes meta's prophet library.  
 
     
-#Libraries used  
+# Libraries used  
 * [Prophet](https://facebook.github.io/prophet/)
 * [Streamlit](https://streamlit.io/)
 * [yfinance](https://pypi.org/project/yfinance/)
