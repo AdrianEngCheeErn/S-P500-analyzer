@@ -49,7 +49,7 @@ if input_symbol != "-":
     try:
         annual_change = (data.iloc[-1]['Adj Close'] - data.iloc[0]['Adj Close']) / data.iloc[0]['Adj Close'] * 100
         annual_change = round(annual_change, 2)
-        st.write("Annual Change : " + str(annual_change) + "%")
+        st.write("Adjusted Closing Changes : " + str(annual_change) + "%")
     except:
         pass
     st.write(data2)
