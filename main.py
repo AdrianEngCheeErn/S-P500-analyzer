@@ -38,65 +38,68 @@ end_date = st.sidebar.date_input('End Date')
 
 
 if input_symbol != "-":
-    data = yf.download(input_symbol, start=start_date, end=end_date)
-    fig = px.line(data, x = data.index, y = data['Adj Close'], title=input_symbol)
-    st.plotly_chart(fig)
-    
-    st.header("Price Movement")
-    data2 = data
-    data2['Change'] = (data['Adj Close'] / data['Adj Close'].shift(periods = 1)) - 1
-    data2.dropna(inplace = True)
     try:
-        annual_change = (data.iloc[-1]['Adj Close'] - data.iloc[0]['Adj Close']) / data.iloc[0]['Adj Close'] * 100
-        annual_change = round(annual_change, 2)
-        st.write("Adjusted Closing Changes : " + str(annual_change) + "%")
-    except:
-        pass
-    st.write(data2)
-    st.text(" ")
-    st.text(" ")
-    st.text(" ")
+        data = yf.download(input_symbol, start=start_date, end=end_date)
+        fig = px.line(data, x = data.index, y = data['Adj Close'], title=input_symbol)
+        st.plotly_chart(fig)
+        
+        st.header("Price Movement")
+        data2 = data
+        data2['Change'] = (data['Adj Close'] / data['Adj Close'].shift(periods = 1)) - 1
+        data2.dropna(inplace = True)
+        try:
+            annual_change = (data.iloc[-1]['Adj Close'] - data.iloc[0]['Adj Close']) / data.iloc[0]['Adj Close'] * 100
+            annual_change = round(annual_change, 2)
+            st.write("Adjusted Closing Changes : " + str(annual_change) + "%")
+        except:
+            pass
+        st.write(data2)
+        st.text(" ")
+        st.text(" ")
+        st.text(" ")
 
-    TODAY = date.today().strftime("%Y-%m-%d")
-    START = "2015-01-01"
+        TODAY = date.today().strftime("%Y-%m-%d")
+        START = "2015-01-01"
 
-    @st.cache_data
-    def load_data(ticker):
-        data = yf.download(ticker, START, TODAY)
-        data.reset_index(inplace=True)
-        return data
- 
-    data = load_data(input_symbol)
-    st.text(" ")
-    st.text(" ")
-    st.text(" ")
-
-    st.subheader('Stock price prediction')
-    # Predict forecast with Prophet.
-    n_years = st.slider('Years of prediction:', 1, 4)
-    period = n_years * 365
-    df_train = data[['Date','Close']]
-    df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
-    st.text(" ")
-    st.text(" ")
-    st.text(" ")
-
-    m = Prophet()
-    m.fit(df_train)
-    future = m.make_future_dataframe(periods=period)
-    forecast = m.predict(future)
-
-    # Show and plot forecast
-    st.subheader('Forecast data')
-    st.write(forecast.tail())
+        @st.cache_data
+        def load_data(ticker):
+            data = yf.download(ticker, START, TODAY)
+            data.reset_index(inplace=True)
+            return data
     
-    st.text(" ")
-    st.text(" ")
-    st.text(" ")
-    st.header(f'Forecast plot for {n_years} years')
-    fig1 = plot_plotly(m, forecast)
-    st.plotly_chart(fig1)
+        data = load_data(input_symbol)
+        st.text(" ")
+        st.text(" ")
+        st.text(" ")
 
-    st.write("Forecast components")
-    fig2 = m.plot_components(forecast)
-    st.write(fig2)
+        st.subheader('Stock price prediction')
+        # Predict forecast with Prophet.
+        n_years = st.slider('Years of prediction:', 1, 4)
+        period = n_years * 365
+        df_train = data[['Date','Close']]
+        df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
+        st.text(" ")
+        st.text(" ")
+        st.text(" ")
+
+        m = Prophet()
+        m.fit(df_train)
+        future = m.make_future_dataframe(periods=period)
+        forecast = m.predict(future)
+
+        # Show and plot forecast
+        st.subheader('Forecast data')
+        st.write(forecast.tail())
+        
+        st.text(" ")
+        st.text(" ")
+        st.text(" ")
+        st.header(f'Forecast plot for {n_years} years')
+        fig1 = plot_plotly(m, forecast)
+        st.plotly_chart(fig1)
+
+        st.write("Forecast components")
+        fig2 = m.plot_components(forecast)
+        st.write(fig2)
+    except:
+        st.header("Ensure start date is earlier than end date.")
